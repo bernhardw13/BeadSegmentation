@@ -2,17 +2,17 @@
 %Version 0.1 edited on 09.05.2018
 
 function varargout = segmentBeads_v0_1(varargin)
-% SEGMENTBEADS_v0_1 MATLAB code for segmentBeads_v0_1.fig
-%      SEGMENTBEADS_v0_1, by itself, creates a new SEGMENTBEADS_v0_1 or raises the existing
+% segmentbeads_v0_1 MATLAB code for segmentBeads_v0_1.fig
+%      segmentbeads_v0_1, by itself, creates a new segmentbeads_v0_1 or raises the existing
 %      singleton*.
 %
-%      H = SEGMENTBEADS_v0_1 returns the handle to a new SEGMENTBEADS_v0_1 or the handle to
+%      H = segmentbeads_v0_1 returns the handle to a new segmentbeads_v0_1 or the handle to
 %      the existing singleton*.
 %
-%      SEGMENTBEADS_v0_1('CALLBACK',hObject,eventData,handles,...) calls the local
-%      function named CALLBACK in SEGMENTBEADS_v0_1.M with the given input arguments.
+%      segmentbeads_v0_1('CALLBACK',hObject,eventData,handles,...) calls the local
+%      function named CALLBACK in segmentbeads_v0_1.M with the given input arguments.
 %
-%      SEGMENTBEADS_v0_1('Property','Value',...) creates a new SEGMENTBEADS_v0_1 or raises the
+%      segmentbeads_v0_1('Property','Value',...) creates a new segmentbeads_v0_1 or raises the
 %      existing singleton*.  Starting from the left, property value pairs are
 %      applied to the GUI before segmentBeads_v0_1_OpeningFcn gets called.  An
 %      unrecognized property name or invalid value makes property application
@@ -25,7 +25,7 @@ function varargout = segmentBeads_v0_1(varargin)
 
 % Edit the above text to modify the response to help segmentBeads_v0_1
 
-% Last Modified by GUIDE v2.5 30-May-2018 15:18:19
+% Last Modified by GUIDE v2.5 27-Jun-2018 09:45:26
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
