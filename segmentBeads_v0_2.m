@@ -1,38 +1,38 @@
 %Created by Bernhard Wallmeyer, 02.05.2018
 %Version 0.1 edited on 09.05.2018
 
-function varargout = segmentBeads_v0_1(varargin)
-% segmentbeads_v0_1 MATLAB code for segmentBeads_v0_1.fig
-%      segmentbeads_v0_1, by itself, creates a new segmentbeads_v0_1 or raises the existing
+function varargout = segmentBeads_v0_2(varargin)
+% segmentbeads_v0_2 MATLAB code for segmentBeads_v0_2.fig
+%      segmentbeads_v0_2, by itself, creates a new segmentbeads_v0_2 or raises the existing
 %      singleton*.
 %
-%      H = segmentbeads_v0_1 returns the handle to a new segmentbeads_v0_1 or the handle to
+%      H = segmentbeads_v0_2 returns the handle to a new segmentbeads_v0_2 or the handle to
 %      the existing singleton*.
 %
-%      segmentbeads_v0_1('CALLBACK',hObject,eventData,handles,...) calls the local
-%      function named CALLBACK in segmentbeads_v0_1.M with the given input arguments.
+%      segmentbeads_v0_2('CALLBACK',hObject,eventData,handles,...) calls the local
+%      function named CALLBACK in segmentbeads_v0_2.M with the given input arguments.
 %
-%      segmentbeads_v0_1('Property','Value',...) creates a new segmentbeads_v0_1 or raises the
+%      segmentbeads_v0_2('Property','Value',...) creates a new segmentbeads_v0_2 or raises the
 %      existing singleton*.  Starting from the left, property value pairs are
-%      applied to the GUI before segmentBeads_v0_1_OpeningFcn gets called.  An
+%      applied to the GUI before segmentBeads_v0_2_OpeningFcn gets called.  An
 %      unrecognized property name or invalid value makes property application
-%      stop.  All inputs are passed to segmentBeads_v0_1_OpeningFcn via varargin.
+%      stop.  All inputs are passed to segmentBeads_v0_2_OpeningFcn via varargin.
 %
 %      *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
 %      instance to run (singleton)".
 %
 % See also: GUIDE, GUIDATA, GUIHANDLES
 
-% Edit the above text to modify the response to help segmentBeads_v0_1
+% Edit the above text to modify the response to help segmentBeads_v0_2
 
-% Last Modified by GUIDE v2.5 04-Jul-2018 17:08:59
+% Last Modified by GUIDE v2.5 30-Jul-2018 16:45:31
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
                    'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @segmentBeads_v0_1_OpeningFcn, ...
-                   'gui_OutputFcn',  @segmentBeads_v0_1_OutputFcn, ...
+                   'gui_OpeningFcn', @segmentBeads_v0_2_OpeningFcn, ...
+                   'gui_OutputFcn',  @segmentBeads_v0_2_OutputFcn, ...
                    'gui_LayoutFcn',  [] , ...
                    'gui_Callback',   []);
 if nargin && ischar(varargin{1})
@@ -47,15 +47,14 @@ end
 % End initialization code - DO NOT EDIT
 
 
-% --- Executes just before segmentBeads_v0_1 is made visible.
-function segmentBeads_v0_1_OpeningFcn(hObject, eventdata, handles, varargin)
+% --- Executes just before segmentBeads_v0_2 is made visible.
+function segmentBeads_v0_2_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-% varargin   command line arguments to segmentBeads_v0_1 (see VARARGIN)
-
-% Choose default command line output for segmentBeads_v0_1
+% varargin   command line arguments to segmentBeads_v0_2 (see VARARGIN)
+% Choose default command line output for segmentBeads_v0_2
 handles.output = hObject;
 
 handles.radius_peak=3;%in pixels
@@ -64,10 +63,12 @@ handles.diameter_openclose=6;%in pixels; define the size of gaps that should be 
 handles.lmax=2;
 handles.dx=0.381;
 handles.ForcesCalculated=0;
+handles.interp=1;
 
 %create the listener for the sliders; to ensure that values change
 %continously
 handles.sliderListener = addlistener(handles.clipping,'ContinuousValueChange',@(hFigure,eventdata) clippingContValCallback(hObject,eventdata));
+handles.sliderListenerInterp = addlistener(handles.interpolation,'ContinuousValueChange',@(hFigure,eventdata) interpolationContValCallback(hObject,eventdata));
 handles.sliderListenerBeadx = addlistener(handles.beadx,'ContinuousValueChange',@(hFigure,eventdata) beadxContValCallback(hObject,eventdata));
 handles.sliderListenerBeady = addlistener(handles.beady,'ContinuousValueChange',@(hFigure,eventdata) beadyContValCallback(hObject,eventdata));
 handles.sliderListenerFrame = addlistener(handles.frame,'ContinuousValueChange',@(hFigure,eventdata) frameContValCallback(hObject,eventdata));
@@ -83,12 +84,12 @@ handles.NBeads=0;
 % Update handles structure
 guidata(hObject, handles);
 
-% UIWAIT makes segmentBeads_v0_1 wait for user response (see UIRESUME)
+% UIWAIT makes segmentBeads_v0_2 wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 
 
 % --- Outputs from this function are returned to the command line.
-function varargout = segmentBeads_v0_1_OutputFcn(hObject, eventdata, handles) 
+function varargout = segmentBeads_v0_2_OutputFcn(hObject, eventdata, handles) 
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -107,7 +108,7 @@ function segmentBeads_Callback(hObject, eventdata, handles)
 
 noBeads=0;
 for j=1:size(handles.Beads,2)
-interp=4;
+interp=handles.Beads(j).interp;
 radius_peak=handles.Beads(j).radius_peak;
 radius_cutout=handles.Beads(j).cutoutBox;
 cutoutTrigger=handles.Beads(j).cutoutTrigger;
@@ -169,13 +170,24 @@ f = msgbox(strcat('Segmenting bead',' ',num2str(j),' ','of',' ',num2str(size(han
 
     f = msgbox({strcat('Segmenting bead',' ',num2str(j),' ','of',' ',num2str(size(handles.Beads,2)));'Calculating edge'},'status','replace');
 
-    imwrite(uint16(binary(:,:,1)),horzcat(save_dir,filesep,'BinaryBead',num2str(noBeads),'.tif'));
+    %imwrite(uint16(binary(:,:,1)),horzcat(save_dir,filesep,'BinaryBead',num2str(noBeads),'.tif'));
+    clear options
+    options.overwrite = true;
+    options.message = false;
+    options.big = true; % Use BigTIFF format
+    saveastiff(uint8(binary(:,:,1)), horzcat(save_dir,filesep,'BinaryBead',num2str(noBeads),'.tif'), options);
     %imwrite(uint16(cutout(:,:,1)),horzcat(save_dir,filesep,'Bead',num2str(noBeads),'.tif'));
-    imwrite(uint16(filtered(:,:,1)),horzcat(save_dir,filesep,'FilteredBead',num2str(noBeads),'.tif'));
+    %imwrite(uint16(filtered(:,:,1)),horzcat(save_dir,filesep,'FilteredBead',num2str(noBeads),'.tif'));
+    globalmin=min(filtered(:));
+    globalmax=max(filtered(:));
+    saveastiff(uint8((filtered(:,:,1)-globalmin)/(globalmax-globalmin)*255), horzcat(save_dir,filesep,'FilteredBead',num2str(noBeads),'.tif'), options);
     for l=2:size(binary,3)
-        imwrite(uint16(binary(:,:,l)),horzcat(save_dir,filesep,'BinaryBead',num2str(noBeads),'.tif'),'writemode','append');
+        %imwrite(uint16(binary(:,:,l)),horzcat(save_dir,filesep,'BinaryBead',num2str(noBeads),'.tif'),'writemode','append');
+        options.append = true;
+        saveastiff(uint8(binary(:,:,l)), horzcat(save_dir,filesep,'BinaryBead',num2str(noBeads),'.tif'), options);
         %imwrite(uint16(cutout(:,:,l)),horzcat(save_dir,filesep,'Bead',num2str(noBeads),'.tif'),'writemode','append');
-        imwrite(uint16(filtered(:,:,l)),horzcat(save_dir,filesep,'FilteredBead',num2str(noBeads),'.tif'),'writemode','append');
+        %imwrite(uint16(filtered(:,:,l)),horzcat(save_dir,filesep,'FilteredBead',num2str(noBeads),'.tif'),'writemode','append');
+        saveastiff(uint8((filtered(:,:,l)-globalmin)/(globalmax-globalmin)*255), horzcat(save_dir,filesep,'FilteredBead',num2str(noBeads),'.tif'), options);
     end
     ind = find(binary==1);
     [x,y,z] = ind2sub(size(binary),ind);
@@ -238,8 +250,8 @@ f = msgbox(strcat('Segmenting bead',' ',num2str(j),' ','of',' ',num2str(size(han
 %         el=pi/2-el;
 %         az=az+pi;
 %         
-    [az,el,~]=cart2sph((X(:)-mean(X(:)))*(dx),(Y(:)-mean(Y(:)))*(dx),(Z(:)-mean(Z(:)))*(dx));
-    [x_undis,y_undis,z_undis]=sph2cart(az, el,spherical_harmonics_parameters(1)/sqrt(4*pi));
+    %[az,el,~]=cart2sph((X(:)-mean(X(:)))*(dx),(Y(:)-mean(Y(:)))*(dx),(Z(:)-mean(Z(:)))*(dx));
+    %[x_undis,y_undis,z_undis]=sph2cart(az, el,spherical_harmonics_parameters(1)/sqrt(4*pi));
     displacement_harmonic=zeros(size(x_undis,1),6);
     displacement_harmonic(:,1:3)=[x_undis,y_undis,z_undis];
 %         displacement_harmonic(:,4:6)=displacement_principalDeformation(spherical_harmonics_parameters,tmp(:,1), tmp(:,2), tmp(:,3));
@@ -256,9 +268,16 @@ f = msgbox(strcat('Segmenting bead',' ',num2str(j),' ','of',' ',num2str(size(han
     end
     harmonics = imclose(harmonics,se);
     %harmonics = imopen(harmonics,se);
-    imwrite(uint16(harmonics(:,:,1)),horzcat(save_dir,filesep,'FittedBead',num2str(noBeads),'.tif'));
+    clear options
+    options.overwrite = true;
+    options.message = false;
+    options.big = true; % Use BigTIFF format
+    saveastiff(uint8(harmonics(:,:,1)), horzcat(save_dir,filesep,'FittedBead',num2str(noBeads),'.tif'), options);
+    %imwrite(uint16(harmonics(:,:,1)),horzcat(save_dir,filesep,'FittedBead',num2str(noBeads),'.tif'));
     for l=2:size(harmonics,3)
-        imwrite(uint16(harmonics(:,:,l)),horzcat(save_dir,filesep,'FittedBead',num2str(noBeads),'.tif'),'writemode','append');
+        options.append = true;
+        saveastiff(uint8(harmonics(:,:,l)), horzcat(save_dir,filesep,'FittedBead',num2str(noBeads),'.tif'), options);
+        %imwrite(uint16(harmonics(:,:,l)),horzcat(save_dir,filesep,'FittedBead',num2str(noBeads),'.tif'),'writemode','append');
     end
     handles.Beads(j).harmonics=harmonics;
 
@@ -312,6 +331,7 @@ function clipping_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
  sliderValue = round(get(handles.clipping,'Value'),2,'decimal');
+ set(handles.label_clipping,'String',num2str(sliderValue));
  handles.clippingLevel=sliderValue;
  guidata(hObject, handles);
 
@@ -370,6 +390,15 @@ function label_clipping_CreateFcn(hObject, eventdata, handles)
  set(handles.label_clipping,'String',num2str(sliderValue));
  handles.clippingLevel=sliderValue;
  guidata(hFigure);
+ 
+  function interpolationContValCallback(hFigure,eventdata)
+ % test it out - get the handles object and write the current value
+ % to the edit box
+ handles = guidata(hFigure);
+ sliderValue = round(get(handles.interpolation,'Value'),0);
+ set(handles.interpolation_label,'String',num2str(sliderValue));
+ handles.interp=sliderValue;
+ guidata(hFigure);
 
  function beadxContValCallback(hFigure,eventdata)
  % test it out - get the handles object and write the current value
@@ -402,7 +431,7 @@ function label_clipping_CreateFcn(hObject, eventdata, handles)
  plotBeadPos(hFigure,handles);
  guidata(hFigure);
  
-  function segframeContValCallback(hFigure,eventdata)
+ function segframeContValCallback(hFigure,eventdata)
  % test it out - get the handles object and write the current value
  % to the edit box
  handles = guidata(hFigure);
@@ -412,7 +441,7 @@ function label_clipping_CreateFcn(hObject, eventdata, handles)
  plotSegBead(hFigure,handles);
  guidata(hFigure);
  
-   function segbeadContValCallback(hFigure,eventdata)
+ function segbeadContValCallback(hFigure,eventdata)
  % test it out - get the handles object and write the current value
  % to the edit box
  handles = guidata(hFigure);
@@ -427,7 +456,7 @@ function label_clipping_CreateFcn(hObject, eventdata, handles)
  plotForceDipol(hFigure,handles);
  guidata(hFigure);
  
-  function cutoutContValCallback(hFigure,eventdata)
+ function cutoutContValCallback(hFigure,eventdata)
  % test it out - get the handles object and write the current value
  % to the edit box
  handles = guidata(hFigure);
@@ -469,11 +498,14 @@ handles.z_end=size(handles.info,1);
 handles.NY=handles.info.Width;
 handles.NX=handles.info.Height;
 
-handles.img=zeros(handles.NY,handles.NX,handles.z_end,'uint16');
+%handles.img=zeros(handles.NY,handles.NX,handles.z_end,'uint16');
 
-for iPlane=1:handles.z_end
-    handles.img(:,:,iPlane)=imread(file_img,iPlane)';%%Matlab defines x&y-axis the other way round!
-end
+%for iPlane=1:handles.z_end
+%    handles.img(:,:,iPlane)=imread(file_img,iPlane)';%%Matlab defines x&y-axis the other way round!
+%end
+
+handles.img = loadtiff(file_img);
+
 handles.CurrentFrame=round(handles.z_end/2);
 handles.iBead=[round(handles.NX/2),round(handles.NY/2),round(handles.z_end/2)];
 handles.frame.Enable='on';
@@ -540,6 +572,7 @@ handles.Beads(handles.NBeads).cutoutTrigger=1;
 handles.Beads(handles.NBeads).radius_peak=handles.radius_peak;
 handles.Beads(handles.NBeads).diameter_openclose=handles.diameter_openclose;
 handles.Beads(handles.NBeads).clippingLevel=handles.clippingLevel;
+handles.Beads(handles.NBeads).interp=handles.interp;
 handles.Beads(handles.NBeads).lmax=handles.lmax;
 handles.Beads(handles.NBeads).filename=handles.tiffs(handles.currentTiff).name;
 handles.Beads(handles.NBeads).pathname=handles.pathname;
@@ -1037,3 +1070,51 @@ function checkboxCompression_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of checkboxCompression
+
+
+% --- Executes on slider movement.
+function interpolation_Callback(hObject, eventdata, handles)
+% hObject    handle to interpolation (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'Value') returns position of slider
+%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+ sliderValue = round(get(handles.interpolation,'Value'),0);
+ set(handles.interpolation_label,'String',num2str(sliderValue));
+ handles.interp=sliderValue;
+ guidata(hObject, handles);
+
+
+% --- Executes during object creation, after setting all properties.
+function interpolation_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to interpolation (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: slider controls usually have a light gray background.
+if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor',[.9 .9 .9]);
+end
+
+
+% --- Executes on button press in exportfigs.
+function exportfigs_Callback(hObject, eventdata, handles)
+% hObject    handle to exportfigs (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+[save_file,save_path]=uiputfile([handles.pathname,filesep,'*.mat'],'Save path');
+save_fig=figure('Visible','off');
+axes_new=copyobj(handles.plotsegmentation,save_fig);
+set(axes_new,'units','normalized','Position',get(groot,'DefaultAxesPosition'));
+legend(axes_new,'show');
+set(save_fig,'CreateFcn','set(gcbf,''Visible'',''on'')');
+savefig(save_fig,[save_path,save_file(1:end-4),'_segmentation','.fig']);
+delete(save_fig);
+save_fig=figure('Visible','off');
+axes_new=copyobj(handles.plotforcedipol,save_fig);
+set(axes_new,'units','normalized','Position',get(groot,'DefaultAxesPosition'));
+legend(axes_new,'show');
+set(save_fig,'CreateFcn','set(gcbf,''Visible'',''on'')');
+savefig(save_fig,[save_path,save_file(1:end-4),'_forcedipol','.fig']);
+delete(save_fig);
