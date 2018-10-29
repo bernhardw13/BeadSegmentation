@@ -6,3 +6,4 @@ This software benefits from following code:
 3. Fitting quadratic curves and surfaces version 1.4 by Levente Hunyadi https://de.mathworks.com/matlabcentral/fileexchange/45356-fitting-quadratic-curves-and-surfaces
 4. quaternion version 1.8 by Mark Tincknell https://de.mathworks.com/matlabcentral/fileexchange/33341-quaternion
 5. Multipage TIFF stack version 4.4.0.0 by YoonOh Tak https://de.mathworks.com/matlabcentral/fileexchange/35684-multipage-tiff-stack
+6. RunLength version 1.2.0.0 by Jan Simon https://de.mathworks.com/matlabcentral/fileexchange/41813-runlength
