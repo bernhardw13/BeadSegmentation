@@ -1,38 +1,38 @@
 %Created by Bernhard Wallmeyer, 02.05.2018
 %Version 0.1 edited on 09.05.2018
 
-function varargout = segmentBeads_v0_4(varargin)
-% segmentbeads_v0_4 MATLAB code for segmentBeads_v0_4.fig
-%      segmentbeads_v0_4, by itself, creates a new segmentbeads_v0_4 or raises the existing
+function varargout = segmentBeads_v0_5(varargin)
+% segmentbeads_v0_5 MATLAB code for segmentBeads_v0_5.fig
+%      segmentbeads_v0_5, by itself, creates a new segmentbeads_v0_5 or raises the existing
 %      singleton*.
 %
-%      H = segmentbeads_v0_4 returns the handle to a new segmentbeads_v0_4 or the handle to
+%      H = segmentbeads_v0_5 returns the handle to a new segmentbeads_v0_5 or the handle to
 %      the existing singleton*.
 %
-%      segmentbeads_v0_4('CALLBACK',hObject,eventData,handles,...) calls the local
-%      function named CALLBACK in segmentbeads_v0_4.M with the given input arguments.
+%      segmentbeads_v0_5('CALLBACK',hObject,eventData,handles,...) calls the local
+%      function named CALLBACK in segmentbeads_v0_5.M with the given input arguments.
 %
-%      segmentbeads_v0_4('Property','Value',...) creates a new segmentbeads_v0_4 or raises the
+%      segmentbeads_v0_5('Property','Value',...) creates a new segmentbeads_v0_5 or raises the
 %      existing singleton*.  Starting from the left, property value pairs are
-%      applied to the GUI before segmentBeads_v0_4_OpeningFcn gets called.  An
+%      applied to the GUI before segmentBeads_v0_5_OpeningFcn gets called.  An
 %      unrecognized property name or invalid value makes property application
-%      stop.  All inputs are passed to segmentBeads_v0_4_OpeningFcn via varargin.
+%      stop.  All inputs are passed to segmentBeads_v0_5_OpeningFcn via varargin.
 %
 %      *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
 %      instance to run (singleton)".
 %
 % See also: GUIDE, GUIDATA, GUIHANDLES
 
-% Edit the above text to modify the response to help segmentBeads_v0_4
+% Edit the above text to modify the response to help segmentBeads_v0_5
 
-% Last Modified by GUIDE v2.5 12-Oct-2018 10:32:00
+% Last Modified by GUIDE v2.5 23-Nov-2018 13:14:55
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
                    'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @segmentBeads_v0_4_OpeningFcn, ...
-                   'gui_OutputFcn',  @segmentBeads_v0_4_OutputFcn, ...
+                   'gui_OpeningFcn', @segmentBeads_v0_5_OpeningFcn, ...
+                   'gui_OutputFcn',  @segmentBeads_v0_5_OutputFcn, ...
                    'gui_LayoutFcn',  [] , ...
                    'gui_Callback',   []);
 if nargin && ischar(varargin{1})
@@ -47,14 +47,14 @@ end
 % End initialization code - DO NOT EDIT
 
 
-% --- Executes just before segmentBeads_v0_4 is made visible.
-function segmentBeads_v0_4_OpeningFcn(hObject, eventdata, handles, varargin)
+% --- Executes just before segmentBeads_v0_5 is made visible.
+function segmentBeads_v0_5_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-% varargin   command line arguments to segmentBeads_v0_4 (see VARARGIN)
-% Choose default command line output for segmentBeads_v0_4
+% varargin   command line arguments to segmentBeads_v0_5 (see VARARGIN)
+% Choose default command line output for segmentBeads_v0_5
 handles.output = hObject;
 
 handles.radius_peak=3;%in pixels
@@ -85,12 +85,12 @@ handles.NBeads=0;
 % Update handles structure
 guidata(hObject, handles);
 
-% UIWAIT makes segmentBeads_v0_4 wait for user response (see UIRESUME)
+% UIWAIT makes segmentBeads_v0_5 wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 
 
 % --- Outputs from this function are returned to the command line.
-function varargout = segmentBeads_v0_4_OutputFcn(hObject, eventdata, handles) 
+function varargout = segmentBeads_v0_5_OutputFcn(hObject, eventdata, handles) 
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -717,7 +717,7 @@ u=[handles.Forces(handles.currentBead).Factio(1);handles.Forces(handles.currentB
 v=[handles.Forces(handles.currentBead).Factio(2);handles.Forces(handles.currentBead).Freactio(2)];
 w=[handles.Forces(handles.currentBead).Factio(3);handles.Forces(handles.currentBead).Freactio(3)];
 hold(handles.plotforcedipol,'on');
-q=quiver(handles.plotforcedipol,y,x,v,u,2,'LineWidth',2.0);
+q=quiver(handles.plotforcedipol,y,x,v*10^9,u*10^9,2,'LineWidth',0.5);
 hold(handles.plotforcedipol,'off');
 set(handles.ampdipol,'String',horzcat('Force: ',num2str(round(norm(handles.Forces(handles.currentBead).Factio)*10^9,2)),' nN, Tension: ',num2str(round(norm(handles.Forces(handles.currentBead).Tactio),2)),' Pa'));
 %handles.ampdipol.String=horzcat(num2str(round(norm(handles.currentBead).Factio)*10^9,2),' nN');
@@ -1000,9 +1000,9 @@ for j=1:Ntp
     handles=loadImage(hObject,handles);
     handles=autoRetainBeadPos(hObject,handles,j-1);
     handles=segmentBeads(hObject,handles);
-    %handles=calcForce(hObject,handles);
+    handles=calcAnalyticForce(hObject,handles);
     counter=counter+handles.NBeads;
-    %plotForceDipol(hObject, handles);
+    plotForceDipol(hObject, handles);
     plotSegBead(hObject,handles);
 end
 handles.labelRetained.String=horzcat('Analysed a total of',' ',num2str(counter),' Beads');
@@ -1317,3 +1317,150 @@ Forces=handles.Forces;
 handles.ForcesCalculated=1;
 save(horzcat(handles.pathname,filesep,'Beads.mat'),'Forces','-v7.3','-append')        
 guidata(hObject,handles);
+
+% --- Executes on button press in calcanalytic.
+function calcanalytic_Callback(hObject, eventdata, handles)
+% hObject    handle to calcanalytic (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles=calcAnalyticForce(hObject,handles);
+plotForceDipol(hObject, handles);
+guidata(hObject, handles);
+
+function handles=calcAnalyticForce(hObject,handles)
+% Calculate mesh on bead surface for calculation of force-dipol direction
+N=5000;%intended number of points on surface of bead
+A=4*pi/N;%average area per point
+d=sqrt(A);
+Mel=round(pi/d);%number of circles of latitude
+del=pi/Mel;%distance between circles of latitude
+daz=A/del;%distance between points in azimuthal direction; in the end del~daz and del*daz=A
+el=0;
+az=0;
+Ncount=0;
+for m=0:Mel-1
+   eltmp=pi*(m+0.5)/Mel;
+   Maz=round(2*pi*sin(eltmp)/daz);%number of points on current circle of latitude
+   for n=0:Maz-1
+       el=[el;eltmp];
+       az=[az;2*pi*n/Maz-pi];
+   end
+   Ncount=Ncount+1;
+end
+el=el(2:end);
+az=az(2:end);
+
+% Calculate force dipols
+parameterfiles=dir(horzcat(handles.tiffs(1).folder,filesep,'*/Bead*_SphericalHarmonics.mat'));
+for j=1:size(handles.Beads,2)
+youngsmod=handles.Beads(j).youngsmod;
+f = msgbox({strcat('Calculating force-dipol for bead',' ',num2str(j),' ','of',' ',num2str(size(handles.Beads,2)))},'status','replace');
+%Load parameterfiles
+load(horzcat(parameterfiles(j).folder,filesep,parameterfiles(j).name));
+
+%Rotate force into lab coordinate system
+%get cartesian coordinates
+[x,y,z]=sph2cart(az-pi,el-pi/2,spherical_harmonics_parameters(1)/sqrt(4*pi));
+%Rotate system such that Bead aligns with z-axis
+q0=cos(spherical_harmonics_parameters(3));
+az0=spherical_harmonics_parameters(4);
+el0=spherical_harmonics_parameters(5);
+tmp=[cos(el0)*cos(az0), -sin(az0), -sin(el0)*cos(az0); ...
+		cos(el0)*sin(az0),  cos(az0), -sin(el0)*sin(az0); ...
+		sin(el0),           0,         cos(el0)];
+q1=sin(spherical_harmonics_parameters(3))*tmp(1,1);
+q2=sin(spherical_harmonics_parameters(3))*tmp(2,1);
+q3=sin(spherical_harmonics_parameters(3))*tmp(3,1);
+q = quaternion(q0,q1,q2,q3);
+n = RotateVector( q, [x,y,z] );
+[azrot,elrot,~]=cart2sph(n(:,1),n(:,2),n(:,3));
+theta=pi/2+elrot;
+phi=azrot+pi;
+ind1=find(theta<=pi/2);
+xactio=mean(x(ind1));
+yactio=mean(y(ind1));
+zactio=mean(z(ind1));
+ind2=find(theta>pi/2);
+xreactio=mean(x(ind2));
+yreactio=mean(y(ind2));
+zreactio=mean(z(ind2));
+direction=[xactio-xreactio,yactio-yreactio,zactio-zreactio];
+direction=direction/vecnorm(direction);
+Factio=getForce(spherical_harmonics_parameters(1)*10^(-6), spherical_harmonics_parameters(2)*10^(-6), youngsmod, 0.49)*direction;
+Tactio=getTension(spherical_harmonics_parameters(1)*10^(-6), spherical_harmonics_parameters(2)*10^(-6), youngsmod, 0.49)*direction;
+Freactio=-Factio;
+Treactio=-Tactio;
+
+handles.Forces(j).Factio=Factio;
+handles.Forces(j).Tactio=Tactio;
+handles.Forces(j).ractio=[xactio,yactio,zactio];
+handles.Forces(j).Freactio=Freactio;
+handles.Forces(j).Treactio=Treactio;
+handles.Forces(j).rreactio=[xreactio,yreactio,zreactio];
+
+end
+Forces=handles.Forces;
+handles.ForcesCalculated=1;
+save(horzcat(handles.pathname,filesep,'Beads.mat'),'Forces','-v7.3','-append')        
+guidata(hObject,handles);
+
+function [F] = getForce(c00, c20, E, nu)
+%GETFORCE Returns the magnitude of the force dipol
+%   According to the force-dipol model this is the analytical solution of
+%   the force
+mu=E/(2*(1+nu));
+N=(2*nu/(1-2*nu)-(1+1/(1-2*nu))/(2*(2-3*nu))+1);
+F=(mu*c20*sqrt(5)*c00*N)/2;
+
+function [T] = getTension(c00, c20, E, nu)
+%GETFORCE Returns the magnitude of the tension dipol
+%   According to the force-dipol model this is the analytical solution of
+%   the tension
+mu=E/(2*(1+nu));
+N=(2*nu/(1-2*nu)-(1+1/(1-2*nu))/(2*(2-3*nu))+1);
+T=(mu*c20*sqrt(5)*N)/(2*c00);
+
+
+% --------------------------------------------------------------------
+function batchforces_Callback(hObject, eventdata, handles)
+% hObject    handle to batchforces (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+[handles.batchfilename,handles.batchpathname]=uigetfile;
+load(horzcat(handles.batchpathname,handles.batchfilename));
+handles.radius_peak=radius_peak;%in pixels
+handles.clippingLevel=clippingLevel;%minimal amount of peak height intensity that defines bead surface
+handles.diameter_openclose=diameter_openclose;%in pixels; define the size of gaps that should be closed
+handles.lmax=lmax;
+handles.interp=interp_factor;
+handles.youngsmod=youngsmod;
+handles.trackpathname=track_path;
+handles.trackfilename=track_file;
+
+counter=0;
+[b,n]=RunLength(path_pattern);
+for j=1:Ntp
+    if isfield(handles,'Beads')
+        handles=rmfield(handles,'Beads');
+    end
+    if isfield(handles,'Forces')
+        handles=rmfield(handles,'Forces');
+    end
+    handles.NBeads=0;
+    handles.pathname=fixPath(b,n,num2str(j-1));
+    handles.tiffs=dir(horzcat(handles.pathname,filesep,'*.tif*'));
+    handles.listbox3.Value=1;
+    handles.currentTiff=1;
+    handles.listbox3.String = {handles.tiffs.name};
+    load(horzcat(handles.pathname,filesep,'Beads.mat'));
+    handles.Beads=Beads;
+    handles.currentBead=1;
+    handles.currentSegFrame=1;
+    
+    handles=calcAnalyticForce(hObject,handles);
+    counter=counter+handles.NBeads;
+    plotForceDipol(hObject, handles);
+    plotSegBead(hObject,handles);
+end
+handles.labelRetained.String=horzcat('Analysed a total of',' ',num2str(counter),' Beads');
+guidata(hObject, handles);
